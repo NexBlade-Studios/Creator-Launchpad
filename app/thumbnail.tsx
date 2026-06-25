@@ -1,18 +1,10 @@
-import { router } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 export default function Index() {
   return (
     <View
       style={styles.container}
     >
-      <Text style={styles.text}>Creator Launchpad</Text>
-      <Pressable
-      onPress={() => router.push("/category")}
-      style={styles.button}
-      >
-        <Text style={{ color: "#F8F8F8" }}>Get Started</Text>
-      </Pressable>
     </View>
 
     
