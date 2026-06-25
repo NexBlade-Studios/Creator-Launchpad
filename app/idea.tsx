@@ -6,8 +6,34 @@ export default function IdeaScreen() {
     const { category} = useLocalSearchParams();
     const [input, setInput] = useState("");
 
-    const useAI = () => {
-        router.push("/thumbnail");
+    const useAI = async () => {
+        try {
+            const res = await fetch(
+                "https://hvvnyldeapmgnmgqaedp.supabase.co/functions/v1/generate-ideas",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        category,
+                    }),
+                }
+            );
+
+            const data = await res.json();
+
+            router.push({
+                pathname: "/ideas",
+                params: {
+                    ideas: JSON.stringify(data.ideas),
+                    category,
+                },
+            });
+        }
+        catch (error) {
+            console.error(error);
+        }
     }
 
     const ownIdea = () => {
