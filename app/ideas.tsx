@@ -5,17 +5,10 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 export default function GeneratedIdeasScreen() {
     const { ideas, category } = useLocalSearchParams();
 
-    // const parsedIdeas = String(ideas)
-    // .split("\n")
-    // .map((idea) => idea.replace(/^\d+\.\s*/, "").trim())
-    // .filter(Boolean);
-
-    const parsedIdeas = [
-    "I built a gaming PC with AI",
-    "Can AI predict viral videos?",
-    "I tried becoming pro in 7 days",
-    "AI decides my next YouTube video",
-    ];
+    const parsedIdeas = String(ideas)
+    .split("\n")
+    .map((idea) => idea.replace(/^\d+\.\s*/, "").trim())
+    .filter(Boolean);
 
     const [selected, setSelected] = useState<string | null>(null);
 

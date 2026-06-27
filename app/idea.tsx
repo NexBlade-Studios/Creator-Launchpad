@@ -26,7 +26,7 @@ export default function IdeaScreen() {
             router.push({
                 pathname: "/ideas",
                 params: {
-                    ideas: JSON.stringify(data.ideas),
+                    ideas: data.ideas,
                     category,
                 },
             });
