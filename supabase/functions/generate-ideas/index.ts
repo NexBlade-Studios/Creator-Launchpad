@@ -13,7 +13,7 @@ Deno.serve(async (req) => {
   Return only short titles.
   `;
 
-  const model = "gemini-2.5-flash";
+  const model = "gemini-2.5-flash-lite";
 
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1/models/${model}:generateContent`,
@@ -33,18 +33,14 @@ Deno.serve(async (req) => {
     }
   )
 
-  const textResponse = await res.text();
+  const data = await res.json();
 
-  // TEMPORARY DEBUG
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+
   return new Response(
-    JSON.stringify({
-      geminiStatus: res.status,
-      rawResponse: textResponse,
-    }),
+    JSON.stringify({ ideas: text }),
     {
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json"}
     }
   );
 });

@@ -1,38 +1,86 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function GeneratedIdeasScreen() {
     const { ideas, category } = useLocalSearchParams();
 
-    const parsedIdeas = String(ideas)
-    .split("\n")
-    .map((idea) => idea.replace(/^\d+\.\s*/, "").trim())
-    .filter(Boolean);
+    const [ideaList, setIdeaList] = useState<string[]>(
+        () =>
+            String(ideas)
+                .split("\n")
+                .map((idea) => idea.replace(/^\d+\.\s*/, "").trim())
+                .filter(Boolean)
+    )
 
-    const [selected, setSelected] = useState<string | null>(null);
+    const generateMore = async () => {
+        try {
+            const res = await fetch(
+                "https://hvvnyldeapmgnmgqaedp.supabase.co/functions/v1/generate-ideas",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        category,
+                    }),
+                }
+            );
+
+            const data = await res.json();
+
+            const newIdeas = String(data.ideas)
+                .split("\n")
+                .map((idea) => idea.replace(/^\d+\.\s*/, "").trim())
+                .filter(Boolean)
+                
+            setIdeaList(newIdeas);
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+
+    const useIdea = (idea: string) => {
+        Alert.alert(
+            "Generate thumbnail?",
+            idea,
+            [
+                { text: "Cancel", style: "cancel" },
+                {
+                    text: "Yes",
+                    onPress: () => {
+                        router.push({
+                            pathname: "/thumbnail",
+                            params: {
+                                idea,
+                                category,
+                            },
+                        });
+                    },
+                },
+            ]
+        );
+    }
 
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Generated Ideas</Text>
 
-            {parsedIdeas.map((idea, index) => (
+            {ideaList.map((idea, index) => (
                 <Pressable style={styles.card}
-                key={index}
-                onPress={() => {
-                    setSelected(idea);
-                    router.push({
-                        pathname: "/thumbnail",
-                        params: {
-                            idea,
-                            category,
-                        },
-                    });
-                }}
-            >
-                <Text style={styles.card_text}>{idea}</Text>
-            </Pressable>
+                    key={index}
+                    onPress={() => useIdea(idea)}
+                >
+                    <Text style={styles.card_text}>{idea}</Text>
+                </Pressable>
             ))}
+
+            <Pressable style={styles.more_button}
+                onPress={generateMore}>
+                    <Text style={styles.more_text}>Generate more?</Text>
+            </Pressable>
         </View>
     )
 }
@@ -64,5 +112,18 @@ const styles = StyleSheet.create({
         fontSize: 22,
         fontWeight: "bold",
         marginBottom: 20,  
+    },
+    more_text: {
+        color: "white",
+        fontWeight: 600,
+    },
+    more_button: {
+        marginTop: 20,
+        padding: 14,
+        backgroundColor: "#090C9B",
+        borderRadius: 10,
+        width: "100%",
+        maxWidth: 320,
+        alignItems: "center",
     }
 })

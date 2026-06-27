@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function IdeaScreen() {
     const { category} = useLocalSearchParams();
@@ -39,14 +39,29 @@ export default function IdeaScreen() {
     const ownIdea = () => {
         if (!input) return;
 
-        router.push({
-            pathname: "/thumbnail",
-            params: {
-                idea: input,
-                category,
-            }
-        })
-    }
+        Alert.alert(
+            "Generate thumbail?",
+            input,
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                },
+                {
+                    text: "Yes",
+                    onPress: () => {
+                        router.push({
+                            pathname: "/thumbnail",
+                            params: {
+                                idea: input,
+                                category,
+                            },
+                        });
+                    },
+                }
+            ]
+        );
+    };
 
     return (
         <View style={styles.container}>
