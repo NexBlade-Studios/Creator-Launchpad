@@ -1,9 +1,10 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function GeneratedIdeasScreen() {
     const { ideas, category } = useLocalSearchParams();
+    const [loading, setLoading] = useState(false);
 
     const [ideaList, setIdeaList] = useState<string[]>(
         () =>
@@ -14,6 +15,8 @@ export default function GeneratedIdeasScreen() {
     )
 
     const generateMore = async () => {
+        if (loading) return;
+        
         try {
             const res = await fetch(
                 "https://hvvnyldeapmgnmgqaedp.supabase.co/functions/v1/generate-ideas",
@@ -39,6 +42,9 @@ export default function GeneratedIdeasScreen() {
         }
         catch (error) {
             console.error(error);
+        }
+        finally {
+            setLoading(false);
         }
     }
 
@@ -77,9 +83,18 @@ export default function GeneratedIdeasScreen() {
                 </Pressable>
             ))}
 
-            <Pressable style={styles.more_button}
-                onPress={generateMore}>
+            <Pressable style={[
+                styles.more_button,
+                loading && { opacity: 0.6}
+                ]}
+                onPress={generateMore}
+                disabled={loading}
+            >
+                {loading ? (
+                    <ActivityIndicator color="white" />
+                ) :(
                     <Text style={styles.more_text}>Generate more?</Text>
+                )}
             </Pressable>
         </View>
     )

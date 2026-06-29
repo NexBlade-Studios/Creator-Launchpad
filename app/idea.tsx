@@ -1,12 +1,15 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function IdeaScreen() {
     const { category} = useLocalSearchParams();
     const [input, setInput] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const useAI = async () => {
+        if (loading) return;
+
         try {
             const res = await fetch(
                 "https://hvvnyldeapmgnmgqaedp.supabase.co/functions/v1/generate-ideas",
@@ -33,6 +36,9 @@ export default function IdeaScreen() {
         }
         catch (error) {
             console.error(error);
+        }
+        finally {
+            setLoading(false);
         }
     }
 
@@ -69,8 +75,18 @@ export default function IdeaScreen() {
                 Category : { category }
             </Text>
 
-            <Pressable onPress={useAI} style={styles.button}>
-                <Text style={styles.buttonText}>Generate AI Ideas</Text>
+            <Pressable onPress={useAI}
+                style={[
+                    styles.button,
+                    loading && { opacity: 0.6 }
+                ]}
+                disabled={loading}
+            >
+                {loading ? (
+                    <ActivityIndicator color="white" />
+                ) : (
+                    <Text style={styles.buttonText}>Generate AI Ideas</Text>
+                )}
             </Pressable>
 
             <Text style={{ textAlign: "center", fontSize: 20 }}>
@@ -86,6 +102,7 @@ export default function IdeaScreen() {
                 textAlignVertical="top"
                 onChangeText={setInput}
                 style={styles.input}
+                placeholderTextColor="#888"
             />
 
             <Text style={{ alignSelf: "flex-end", paddingRight: 20, color: "#666" }}>
@@ -135,5 +152,8 @@ const styles = StyleSheet.create({
 
     height: 100,
     maxHeight: 160,
+
+    color: "#000",
+    backgroundColor: "#fff"
   }
 })

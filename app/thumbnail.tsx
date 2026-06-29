@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function ThumbnailScreen() {
   const router = useRouter();
@@ -73,8 +73,10 @@ export default function ThumbnailScreen() {
           style={[
             styles.option,
             aspect === "16:9" && styles.selected,
+            loadingImage && { opacity: 0.5 }
           ]}
           onPress={() => setAspect("16:9")}
+          disabled={loadingImage}
         >
           <Text>16:9</Text>
         </Pressable>
@@ -83,8 +85,10 @@ export default function ThumbnailScreen() {
         style={[
           styles.option,
           aspect === "9:16" && styles.selected,
+          loadingImage && { opacity: 0.5 }
         ]}
         onPress={() => setAspect("9:16")}
+        disabled={loadingImage}
         >
           <Text>9:16</Text>
         </Pressable>
@@ -96,8 +100,10 @@ export default function ThumbnailScreen() {
           style={[
             styles.option,
             style === "minimalist" && styles.selected,
+            loadingImage && {opacity: 0.5}
           ]}
           onPress={() => setStyle("minimalist")}
+          disabled={loadingImage}
         >
           <Text>Minimalist</Text>
         </Pressable>
@@ -106,15 +112,22 @@ export default function ThumbnailScreen() {
             style={[
               styles.option,
               style === "striking" && styles.selected,
+              loadingImage && { opacity: 0.5 }
             ]}
             onPress={() => setStyle("striking")}
+            disabled={loadingImage}
           >
             <Text>Striking</Text>
           </Pressable>
       </View>
 
-      <Pressable style={styles.button}
-        onPress={generatePrompt}>
+      <Pressable style={[
+        styles.button,
+        loadingImage && { opacity: 0.5 }
+        ]}
+        onPress={generatePrompt}
+        disabled={loadingImage}
+        >
           <Text style={styles.buttonText}>Generate Prompt</Text>
         </Pressable>
 
@@ -127,13 +140,19 @@ export default function ThumbnailScreen() {
 
         {prompt ? (
           <Pressable
-            style={styles.button}
+            style={[
+              styles.button,
+              loadingImage && { opacity: 0.6 }
+            ]}
             onPress={generateImage}
             disabled={loadingImage}
           >
-            <Text style={styles.buttonText}>
-              {loadingImage? "Generating Image..." : "Generate Thumbnail"}
-            </Text>
+            {loadingImage ? (
+              <ActivityIndicator color="white"/>
+            ) : (
+                <Text style={styles.buttonText}>Generate Thumbnail</Text>
+            )}
+
           </Pressable>
         ) : null}
     </View>
