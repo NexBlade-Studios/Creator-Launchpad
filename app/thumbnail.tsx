@@ -1,8 +1,18 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from "react-native";
 
 export default function ThumbnailScreen() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+
   const router = useRouter();
   const { idea, category } = useLocalSearchParams();
 
@@ -16,64 +26,76 @@ export default function ThumbnailScreen() {
     "9:16": "9:16 TikTok thumbnail",
   };
 
-  const styleMap ={
+  const styleMap = {
     minimalist: "simple composition, clear focal point",
     striking: "eye-catching, bold colors, contrast",
   };
 
   const generatePrompt = () => {
-    const finalPrompt = `Create a ${aspectMap[aspect]} on the title "${idea}" with ${styleMap[style]}. No unnecessary text, clickable.`.trim();
+    const finalPrompt = `Create a ${
+      aspectMap[aspect]
+    } on the title "${idea}" with ${
+      styleMap[style]
+    }. No unnecessary text, clickable.`.trim();
 
     setPrompt(finalPrompt);
-  }
+  };
 
   const generateImage = async () => {
-  try {
-    setLoadingImage(true);
+    try {
+      setLoadingImage(true);
 
-    const res = await fetch(
-      "https://hvvnyldeapmgnmgqaedp.supabase.co/functions/v1/generate-thumbnail",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        "https://hvvnyldeapmgnmgqaedp.supabase.co/functions/v1/generate-thumbnail",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            prompt,
+          }),
         },
-        body: JSON.stringify({
-          prompt,
-        }),
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error(data);
+        return;
       }
-    );
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error(data);
-      return;
+      router.push({
+        pathname: "/result",
+        params: {
+          image: data.imageBase64,
+          mimeType: data.mimeType,
+        },
+      });
+    } finally {
+      setLoadingImage(false);
     }
-
-    router.push({
-      pathname: "/result",
-      params: {
-        image: data.imageBase64,
-        mimeType: data.mimeType,
-      },
-    });
-  } finally {
-    setLoadingImage(false);
-  }
-};
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Thumbnail Generator</Text>
+    <View
+      style={[styles.container, {
+        backgroundColor: isDark ? "#111111" : "#F8F8F8",
+      }]}
+    >
+      <Text style={[styles.title, { color: isDark ? "#F8F8F8" : "#111111" }]}>
+        Thumbnail Generator
+      </Text>
 
-      <Text style={styles.label}>Aspect Ratio</Text>
+      <Text style={[styles.label, { color: isDark ? "#F8F8F8" : "#111111" }]}>
+        Aspect Ratio
+      </Text>
       <View style={styles.row}>
         <Pressable
           style={[
             styles.option,
             aspect === "16:9" && styles.selected,
-            loadingImage && { opacity: 0.5 }
+            loadingImage && { opacity: 0.5 },
           ]}
           onPress={() => setAspect("16:9")}
           disabled={loadingImage}
@@ -82,25 +104,27 @@ export default function ThumbnailScreen() {
         </Pressable>
 
         <Pressable
-        style={[
-          styles.option,
-          aspect === "9:16" && styles.selected,
-          loadingImage && { opacity: 0.5 }
-        ]}
-        onPress={() => setAspect("9:16")}
-        disabled={loadingImage}
+          style={[
+            styles.option,
+            aspect === "9:16" && styles.selected,
+            loadingImage && { opacity: 0.5 },
+          ]}
+          onPress={() => setAspect("9:16")}
+          disabled={loadingImage}
         >
           <Text>9:16</Text>
         </Pressable>
       </View>
 
-      <Text style={styles.label}>Style</Text>
+      <Text style={[styles.label, { color: isDark ? "#F8F8F8" : "#111111" }]}>
+        Style
+      </Text>
       <View style={styles.row}>
         <Pressable
           style={[
             styles.option,
             style === "minimalist" && styles.selected,
-            loadingImage && {opacity: 0.5}
+            loadingImage && { opacity: 0.5 },
           ]}
           onPress={() => setStyle("minimalist")}
           disabled={loadingImage}
@@ -108,53 +132,55 @@ export default function ThumbnailScreen() {
           <Text>Minimalist</Text>
         </Pressable>
 
-          <Pressable
-            style={[
-              styles.option,
-              style === "striking" && styles.selected,
-              loadingImage && { opacity: 0.5 }
-            ]}
-            onPress={() => setStyle("striking")}
-            disabled={loadingImage}
-          >
-            <Text>Striking</Text>
-          </Pressable>
+        <Pressable
+          style={[
+            styles.option,
+            style === "striking" && styles.selected,
+            loadingImage && { opacity: 0.5 },
+          ]}
+          onPress={() => setStyle("striking")}
+          disabled={loadingImage}
+        >
+          <Text>Striking</Text>
+        </Pressable>
       </View>
 
-      <Pressable style={[
-        styles.button,
-        loadingImage && { opacity: 0.5 }
+      <Pressable
+        style={[
+          styles.button,
+          loadingImage && { opacity: 0.5 },
         ]}
         onPress={generatePrompt}
         disabled={loadingImage}
-        >
-          <Text style={styles.buttonText}>Generate Prompt</Text>
-        </Pressable>
+      >
+        <Text style={styles.buttonText}>Generate Prompt</Text>
+      </Pressable>
 
-        {prompt ? (
+      {prompt
+        ? (
           <View style={styles.output}>
             <Text style={styles.outputTitle}>Generated Prompt:</Text>
             <Text style={styles.promptText}>{prompt}</Text>
           </View>
-        ) : null}
+        )
+        : null}
 
-        {prompt ? (
+      {prompt
+        ? (
           <Pressable
             style={[
               styles.button,
-              loadingImage && { opacity: 0.6 }
+              loadingImage && { opacity: 0.6 },
             ]}
             onPress={generateImage}
             disabled={loadingImage}
           >
-            {loadingImage ? (
-              <ActivityIndicator color="white"/>
-            ) : (
-                <Text style={styles.buttonText}>Generate Thumbnail</Text>
-            )}
-
+            {loadingImage
+              ? <ActivityIndicator color="white" />
+              : <Text style={styles.buttonText}>Generate Thumbnail</Text>}
           </Pressable>
-        ) : null}
+        )
+        : null}
     </View>
   );
 }
@@ -164,14 +190,14 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#f8f8f8",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
-    },
+  },
   label: {
     fontSize: 16,
     fontWeight: "600",
@@ -220,4 +246,4 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#333",
   },
-})
+});

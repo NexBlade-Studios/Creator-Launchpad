@@ -1,21 +1,38 @@
 import { router } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from "react-native";
 
 export default function Index() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+
   return (
     <View
-      style={styles.container}
+      style={[
+        styles.container,
+        { backgroundColor: isDark ? "#111111" : "#F8F8F8" },
+      ]}
     >
-      <Text style={styles.text}>Creator Launchpad</Text>
-      <Pressable
-      onPress={() => router.push("/category")}
-      style={styles.button}
+      <Text
+        style={[
+          styles.text,
+          { color: isDark ? "#F8f8f8" : "#111111" },
+        ]}
       >
-        <Text style={{ color: "#F8F8F8" }}>Get Started</Text>
+        Creator Launchpad
+      </Text>
+      <Pressable
+        onPress={() => router.push("/category")}
+        style={styles.button}
+      >
+        <Text style={styles.buttonText}>Get Started</Text>
       </Pressable>
     </View>
-
-    
   );
 }
 
@@ -24,7 +41,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F8F8F8"
+    backgroundColor: "#F8F8F8",
   },
   text: {
     fontSize: 24,
@@ -35,5 +52,8 @@ const styles = StyleSheet.create({
     padding: 12,
     backgroundColor: "#090C9B",
     borderRadius: 10,
-  }
-})
+  },
+  buttonText: {
+    color: "#F8F8F8",
+  },
+});

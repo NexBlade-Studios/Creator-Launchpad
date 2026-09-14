@@ -1,25 +1,55 @@
 import { router } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+    Pressable,
+    StyleSheet,
+    Text,
+    useColorScheme,
+    View,
+} from "react-native";
 
-const categories =["Gaming", "Tech", "Education", "Finance", "Travel", "Fitness", "Comedy"];
+const categories = [
+    "Gaming",
+    "Tech",
+    "Education",
+    "Finance",
+    "Travel",
+    "Fitness",
+    "Comedy",
+    "News",
+    "DIY",
+];
 
 export default function CategoryScreen() {
+    const colorScheme = useColorScheme();
+    const isDark = colorScheme === "dark";
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Choose your niche</Text>
+        <View
+            style={[
+                styles.container,
+                { backgroundColor: isDark ? "#111111" : "#F8F8F8" },
+            ]}
+        >
+            <Text
+                style={[
+                    styles.text,
+                    { color: isDark ? "#F8F8F8" : "#111111" },
+                ]}
+            >
+                Choose your niche
+            </Text>
             <View style={styles.grid}>
                 {categories.map((c) => (
                     <Pressable
                         key={c}
-                        onPress={() => 
+                        onPress={() =>
                             router.push({
                                 pathname: "/idea",
-                                params: { category: c}
-                            })
-                        }
+                                params: { category: c },
+                            })}
                         style={styles.button}
                     >
-                        <Text style={{ color: "white"}}>{c}</Text>
+                        <Text style={{ color: "white" }}>{c}</Text>
                     </Pressable>
                 ))}
             </View>
@@ -45,7 +75,7 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 22,
         fontWeight: "bold",
-        marginBottom: 20,  
+        marginBottom: 20,
     },
     button: {
         padding: 16,
@@ -55,5 +85,5 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#090C9B",
         textAlign: "center",
-    }
-})
+    },
+});

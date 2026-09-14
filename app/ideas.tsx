@@ -1,8 +1,19 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+    ActivityIndicator,
+    Alert,
+    Pressable,
+    StyleSheet,
+    Text,
+    useColorScheme,
+    View,
+} from "react-native";
 
 export default function GeneratedIdeasScreen() {
+    const colorScheme = useColorScheme();
+    const isDark = colorScheme === "dark";
+
     const { ideas, category } = useLocalSearchParams();
     const [loading, setLoading] = useState(false);
 
@@ -11,12 +22,12 @@ export default function GeneratedIdeasScreen() {
             String(ideas)
                 .split("\n")
                 .map((idea) => idea.replace(/^\d+\.\s*/, "").trim())
-                .filter(Boolean)
-    )
+                .filter(Boolean),
+    );
 
     const generateMore = async () => {
         if (loading) return;
-        
+
         try {
             const res = await fetch(
                 "https://hvvnyldeapmgnmgqaedp.supabase.co/functions/v1/generate-ideas",
@@ -28,7 +39,7 @@ export default function GeneratedIdeasScreen() {
                     body: JSON.stringify({
                         category,
                     }),
-                }
+                },
             );
 
             const data = await res.json();
@@ -36,17 +47,15 @@ export default function GeneratedIdeasScreen() {
             const newIdeas = String(data.ideas)
                 .split("\n")
                 .map((idea) => idea.replace(/^\d+\.\s*/, "").trim())
-                .filter(Boolean)
-                
+                .filter(Boolean);
+
             setIdeaList(newIdeas);
-        }
-        catch (error) {
+        } catch (error) {
             console.error(error);
-        }
-        finally {
+        } finally {
             setLoading(false);
         }
-    }
+    };
 
     const useIdea = (idea: string) => {
         Alert.alert(
@@ -66,16 +75,25 @@ export default function GeneratedIdeasScreen() {
                         });
                     },
                 },
-            ]
+            ],
         );
-    }
+    };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Generated Ideas</Text>
+        <View
+            style={[styles.container, {
+                backgroundColor: isDark ? "#111111" : "#F8F8F8",
+            }]}
+        >
+            <Text
+                style={[styles.text, { color: isDark ? "#F8F8F8" : "#111111" }]}
+            >
+                Generated Ideas
+            </Text>
 
             {ideaList.map((idea, index) => (
-                <Pressable style={styles.card}
+                <Pressable
+                    style={styles.card}
                     key={index}
                     onPress={() => useIdea(idea)}
                 >
@@ -83,21 +101,20 @@ export default function GeneratedIdeasScreen() {
                 </Pressable>
             ))}
 
-            <Pressable style={[
-                styles.more_button,
-                loading && { opacity: 0.6}
+            <Pressable
+                style={[
+                    styles.more_button,
+                    loading && { opacity: 0.6 },
                 ]}
                 onPress={generateMore}
                 disabled={loading}
             >
-                {loading ? (
-                    <ActivityIndicator color="white" />
-                ) :(
-                    <Text style={styles.more_text}>Generate more?</Text>
-                )}
+                {loading
+                    ? <ActivityIndicator color="white" />
+                    : <Text style={styles.more_text}>Generate more?</Text>}
             </Pressable>
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -116,7 +133,7 @@ const styles = StyleSheet.create({
         borderColor: "#090C9B",
         borderWidth: 2,
         width: "100%",
-        maxWidth : 320,
+        maxWidth: 320,
     },
     card_text: {
         fontSize: 16,
@@ -126,7 +143,7 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 22,
         fontWeight: "bold",
-        marginBottom: 20,  
+        marginBottom: 20,
     },
     more_text: {
         color: "white",
@@ -140,5 +157,5 @@ const styles = StyleSheet.create({
         width: "100%",
         maxWidth: 320,
         alignItems: "center",
-    }
-})
+    },
+});

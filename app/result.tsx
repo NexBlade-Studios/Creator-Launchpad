@@ -1,10 +1,20 @@
 import { useLocalSearchParams } from "expo-router";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from "react-native";
 
 import * as FileSystem from "expo-file-system/legacy";
 import * as Sharing from "expo-sharing";
 
 export default function ThumbnailResult() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+
   const { image, mimeType } = useLocalSearchParams<{
     image: string;
     mimeType: string;
@@ -13,30 +23,36 @@ export default function ThumbnailResult() {
   const uri = `data:${mimeType};base64,${image}`;
 
   const downloadImage = async () => {
-  try {
-    const fileUri = FileSystem.cacheDirectory + "thumbnail.png";
+    try {
+      const fileUri = FileSystem.cacheDirectory + "thumbnail.png";
 
-    await FileSystem.writeAsStringAsync(fileUri, image, {
-      encoding: "base64",
-    });
+      await FileSystem.writeAsStringAsync(fileUri, image, {
+        encoding: "base64",
+      });
 
-    const available = await Sharing.isAvailableAsync();
+      const available = await Sharing.isAvailableAsync();
 
-    if (!available) {
-      alert("Sharing not available");
-      return;
+      if (!available) {
+        alert("Sharing not available");
+        return;
+      }
+
+      await Sharing.shareAsync(fileUri);
+    } catch (e) {
+      console.error(e);
+      alert("Export failed");
     }
-
-    await Sharing.shareAsync(fileUri);
-  } catch (e) {
-    console.error(e);
-    alert("Export failed");
-  }
-};
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Your Thumbnail</Text>
+    <View
+      style={[styles.container, {
+        backgroundColor: isDark ? "#111111" : "#F8F8F8",
+      }]}
+    >
+      <Text style={[styles.title, { color: isDark ? "#F8F8F8" : "#111111" }]}>
+        Your Thumbnail
+      </Text>
 
       <Image source={{ uri }} style={styles.image} resizeMode="contain" />
 

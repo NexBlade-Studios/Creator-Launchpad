@@ -1,9 +1,21 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+    ActivityIndicator,
+    Alert,
+    Pressable,
+    StyleSheet,
+    Text,
+    TextInput,
+    useColorScheme,
+    View,
+} from "react-native";
 
 export default function IdeaScreen() {
-    const { category} = useLocalSearchParams();
+    const colorScheme = useColorScheme();
+    const isDark = colorScheme === "dark";
+
+    const { category } = useLocalSearchParams();
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(false);
 
@@ -21,7 +33,7 @@ export default function IdeaScreen() {
                     body: JSON.stringify({
                         category,
                     }),
-                }
+                },
             );
 
             const data = await res.json();
@@ -33,14 +45,12 @@ export default function IdeaScreen() {
                     category,
                 },
             });
-        }
-        catch (error) {
+        } catch (error) {
             console.error(error);
-        }
-        finally {
+        } finally {
             setLoading(false);
         }
-    }
+    };
 
     const ownIdea = () => {
         if (!input) return;
@@ -64,29 +74,38 @@ export default function IdeaScreen() {
                             },
                         });
                     },
-                }
-            ]
+                },
+            ],
         );
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>
-                Category : { category }
+        <View
+            style={[
+                styles.container,
+                { backgroundColor: isDark ? "#111111" : "#F8F8F8" },
+            ]}
+        >
+            <Text
+                style={[
+                    styles.text,
+                    { color: isDark ? "#F8F8F8" : "#111111" },
+                ]}
+            >
+                Category : {category}
             </Text>
 
-            <Pressable onPress={useAI}
+            <Pressable
+                onPress={useAI}
                 style={[
                     styles.button,
-                    loading && { opacity: 0.6 }
+                    loading && { opacity: 0.6 },
                 ]}
                 disabled={loading}
             >
-                {loading ? (
-                    <ActivityIndicator color="white" />
-                ) : (
-                    <Text style={styles.buttonText}>Generate AI Ideas</Text>
-                )}
+                {loading
+                    ? <ActivityIndicator color="white" />
+                    : <Text style={styles.buttonText}>Generate AI Ideas</Text>}
             </Pressable>
 
             <Text style={{ textAlign: "center", fontSize: 20 }}>
@@ -101,11 +120,19 @@ export default function IdeaScreen() {
                 maxLength={200}
                 textAlignVertical="top"
                 onChangeText={setInput}
-                style={styles.input}
+                style={[styles.input, {
+                    backgroundColor: isDark ? "#333333" : "#F8F8F8",
+                }]}
                 placeholderTextColor="#888"
             />
 
-            <Text style={{ alignSelf: "flex-end", paddingRight: 20, color: "#666" }}>
+            <Text
+                style={{
+                    alignSelf: "flex-end",
+                    paddingRight: 20,
+                    color: "#666",
+                }}
+            >
                 {input.length}/200
             </Text>
 
@@ -113,22 +140,22 @@ export default function IdeaScreen() {
                 <Text style={styles.buttonText}>Use my own idea</Text>
             </Pressable>
         </View>
-  );
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F8F8F8"
-  },
-  text: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  button: {
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#F8F8F8",
+    },
+    text: {
+        fontSize: 22,
+        fontWeight: "bold",
+        marginBottom: 20,
+    },
+    button: {
         padding: 16,
         backgroundColor: "#3D52D5",
         marginVertical: 10,
@@ -136,24 +163,24 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#090C9B",
         textAlign: "center",
-  },
-  buttonText: {
-    fontSize: 15,
-    color: "#F8F8F8"
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#090C9B",
-    padding: 12,
-    borderRadius: 10,
-    marginVertical: 10,
-    width: "100%",
-    maxWidth: 320,
+    },
+    buttonText: {
+        fontSize: 15,
+        color: "#F8F8F8",
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: "#090C9B",
+        padding: 12,
+        borderRadius: 10,
+        marginVertical: 10,
+        width: "100%",
+        maxWidth: 320,
 
-    height: 100,
-    maxHeight: 160,
+        height: 100,
+        maxHeight: 160,
 
-    color: "#000",
-    backgroundColor: "#fff"
-  }
-})
+        color: "#000",
+        backgroundColor: "#fff",
+    },
+});
