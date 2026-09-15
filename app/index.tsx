@@ -32,6 +32,12 @@ export default function Index() {
       >
         <Text style={styles.buttonText}>Get Started</Text>
       </Pressable>
+      <Pressable
+        onPress={() => router.push("/gallery")}
+        style={styles.button}
+      >
+        <Text style={styles.buttonText}>My Gallery</Text>
+      </Pressable>
     </View>
   );
 }
@@ -55,5 +61,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#F8F8F8",
+    fontWeight: "600",
   },
 });

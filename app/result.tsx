@@ -15,25 +15,40 @@ export default function ThumbnailResult() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
-  const { image, mimeType } = useLocalSearchParams<{
-    image: string;
-    mimeType: string;
+  const { image, imageUri, mimeType, prompt } = useLocalSearchParams<{
+    image?: string;
+    imageUri?: string;
+    mimeType?: string;
+    prompt?: string;
   }>();
 
-  const uri = `data:${mimeType};base64,${image}`;
+  const uri = imageUri ? imageUri : `data:${mimeType};base64,${image}`;
 
   const downloadImage = async () => {
     try {
-      const fileUri = FileSystem.cacheDirectory + "thumbnail.png";
+      let fileUri = imageUri;
 
-      await FileSystem.writeAsStringAsync(fileUri, image, {
-        encoding: "base64",
-      });
+      if (!fileUri && image) {
+        fileUri = `${FileSystem.cacheDirectory}thumbnail.png`;
+
+        await FileSystem.writeAsStringAsync(
+          fileUri,
+          image,
+          {
+            encoding: "base64",
+          },
+        );
+      }
+
+      if (!fileUri) {
+        alert("Image not found");
+        return;
+      }
 
       const available = await Sharing.isAvailableAsync();
 
       if (!available) {
-        alert("Sharing not available");
+        alert("Sharing not available on this device");
         return;
       }
 
@@ -55,6 +70,16 @@ export default function ThumbnailResult() {
       </Text>
 
       <Image source={{ uri }} style={styles.image} resizeMode="contain" />
+
+      {prompt
+        ? (
+          <View style={styles.promptBox}>
+            <Text style={styles.promptTitle}>Prompt</Text>
+
+            <Text style={styles.promptText}>{prompt}</Text>
+          </View>
+        )
+        : null}
 
       <Pressable style={styles.button} onPress={downloadImage}>
         <Text style={styles.buttonText}>Export Thumbnail</Text>
@@ -90,5 +115,23 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontWeight: "600",
+  },
+  promptBox: {
+    width: "100%",
+    maxWidth: 400,
+    padding: 12,
+    backgroundColor: "white",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    marginBottom: 20,
+  },
+  promptTitle: {
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  promptText: {
+    fontSize: 12,
+    color: "#333",
   },
 });

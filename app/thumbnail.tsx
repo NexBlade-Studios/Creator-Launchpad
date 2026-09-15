@@ -9,6 +9,9 @@ import {
   View,
 } from "react-native";
 
+import * as FileSystem from "expo-file-system/legacy";
+import { saveThumbnail } from "../utils/galleryStorage";
+
 export default function ThumbnailScreen() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
@@ -65,13 +68,42 @@ export default function ThumbnailScreen() {
         return;
       }
 
+      const id = Date.now().toString();
+
+      const extension = data.mimeType === "image/jpeg" ? "jpg" : "png";
+
+      const fileUri =
+        `${FileSystem.documentDirectory}thumbnail-${id}.${extension}`;
+
+      await FileSystem.writeAsStringAsync(
+        fileUri,
+        data.imageBase64,
+        {
+          encoding: "base64",
+        },
+      );
+
+      await saveThumbnail({
+        id,
+        imageUri: fileUri,
+        prompt,
+        category: String(category),
+        createdAt: new Date().toISOString(),
+        mimeType: data.mimeType,
+      });
+
       router.push({
         pathname: "/result",
         params: {
           image: data.imageBase64,
           mimeType: data.mimeType,
+          prompt,
+          thumbnailId: id,
         },
       });
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong generating the thumbnail.");
     } finally {
       setLoadingImage(false);
     }

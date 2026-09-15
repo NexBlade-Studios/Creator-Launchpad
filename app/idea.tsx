@@ -122,6 +122,7 @@ export default function IdeaScreen() {
                 onChangeText={setInput}
                 style={[styles.input, {
                     backgroundColor: isDark ? "#333333" : "#F8F8F8",
+                    color: isDark ? "#F8F8F8" : "#000",
                 }]}
                 placeholderTextColor="#888"
             />
