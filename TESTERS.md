@@ -13,4 +13,4 @@ The app is still in closed testing, so in order to access my demo:
 
 - [Closed Test Link](https://play.google.com/apps/testing/com.NexBlade_Studios.Creator_Launchpad)
 
-**Once my project has been rated you WILL be removed from the Google Group and the group will be deleted** You can always just leave the group whenever you have finished testing the app.
+**Once my project has been rated you WILL be removed from the Google Group and the group will be deleted.** You can always just leave the group whenever you have finished testing the app.
