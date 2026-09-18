@@ -5,7 +5,7 @@
 
 ## Preview Screenshots
 
-![Home Page](screenshots/Home Screen.jpeg)
-![Category Screen](screenshots/Category Screen.jpeg)
-![Idea Generation](screenshots/Idea Generation Screen.jpeg)
-![Generated Ideas](screenshots/Generated Ideas Screen.jpeg)
+![Home Page](screenshots/Home_Screen.jpeg)
+![Category Screen](screenshots/Category_Screen.jpeg)
+![Idea Generation](screenshots/Idea_Generation_Screen.jpeg)
+![Generated Ideas](screenshots/Generated_Ideas_Screen.jpeg)
