@@ -5,7 +5,7 @@
 
 ## What is Creator Launchpad
 
-Creator Launchpad is an AI-powered mobile app designed to help content creators go from an idea to a ready-to-use thumbnail. Users can generate video ideas, create thumbnails and save them to a personal gallery where they can be shared. **If you are here for testing, see this file:**[Testing instructions](TESTERS.md)
+Creator Launchpad is an AI-powered mobile app designed to help content creators go from an idea to a ready-to-use thumbnail. Users can generate video ideas, create thumbnails and save them to a personal gallery where they can be shared. **If you are here for testing, see this file: **[Testing instructions](TESTERS.md)
 
 ## Preview Screenshots
 
