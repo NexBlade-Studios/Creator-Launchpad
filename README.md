@@ -5,7 +5,15 @@
 
 ## Preview Screenshots
 
-![Home Page](screenshots/Home%20Screen.jpeg)
-![Category Screen](screenshots/Category%20Screen.jpeg)
-![Idea Generation](screenshots/Idea%20Generation%20Screen.jpeg)
-![Generated Ideas](screenshots/Generated%20Ideas%20Screen.jpeg)
+<p align="center">
+  <img src="screenshots/home.jpeg" width="200">
+  <img src="screenshots/category.jpeg" width="200">
+  <img src="screenshots/idea.jpeg" width="200">
+</p>
+
+<p align="center">
+  <img src="screenshots/ideas.jpeg" width="200">
+  <img src="screenshots/thumbnail.jpeg" width="200">
+  <img src="screenshots/result.jpeg" width="200">
+  <img src="screenshots/gallery.jpeg" width="200">
+</p>
