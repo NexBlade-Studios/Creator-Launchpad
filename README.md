@@ -44,6 +44,8 @@ You make your video, but in order to appeal to an audience you need some way to 
   <img src="screenshots/example2.jpeg" width="250">
   <img src="screenshots/example3.jpeg" width="250">
   <img src="screenshots/example4.jpeg" width="250">
+  <img src="screenshots/example5.jpeg" width="250">
+  <img src="screenshots/example6.jpeg" width="250">
 </p>
 
 ## Pages
