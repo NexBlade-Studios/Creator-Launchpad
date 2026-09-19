@@ -108,7 +108,7 @@ export default function IdeaScreen() {
                     : <Text style={styles.buttonText}>Generate AI Ideas</Text>}
             </Pressable>
 
-            <Text style={{ textAlign: "center", fontSize: 20 }}>
+            <Text style={{ textAlign: "center", fontSize: 20, color: isDark ? "#F8F8F8" : "#111111" }}>
                 OR
             </Text>
 
